@@ -11,12 +11,12 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import {
-  Autocomplete,
+  
   Box,
   Button,
   Divider,
   Stack,
-  TextField,
+  
   Typography,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -32,9 +32,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Modal from "@mui/material/Modal";
 import Swal from "sweetalert2";
-import AddProduct from "./AddProduct";
-// import Editproduct from "./Editproduct";
 import { NavLink } from "react-router-dom";
+import EditProduct from "../component/Editproduct";
+import AddProduct from "./AddProduct";
 
 const style: React.CSSProperties = {
   position: "absolute",
@@ -63,13 +63,14 @@ const Products: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
   const [editopen, setEditopen] = useState(false);
-  const [filteredRows, setFilteredRows] = useState<Product[]>([]);
-  const [formid, setFormid] = useState<Product | null>(null);
+  
+  const [formid, setFormid] = useState<Product>({ id: '', name: '', price: 0, date: '', category: '' });
 
+console.log(formid)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleEditOpen = () => setEditopen(true);
-//   const handleEditClose = () => setEditopen(false);
+  const handleEditClose = () => setEditopen(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
@@ -88,6 +89,7 @@ const Products: React.FC = () => {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
+    console.log(event)
   };
 
   const deleteUser = (id: string) => {
@@ -110,7 +112,6 @@ const Products: React.FC = () => {
     const userDoc = doc(db, "products", id);
     await deleteDoc(userDoc);
     Swal.fire("Deleted!", "Your file has been deleted.", "success");
-    
   };
 
   const editData = (id: string, name: string, price: number, category: string, date: string) => {
@@ -155,7 +156,7 @@ const Products: React.FC = () => {
             aria-describedby="modal-modal-description"
           >
             <Box sx={style}>
-              {/* <Editproduct closeEvent={handleEditClose} fid={formid} /> */}
+              <EditProduct closeEvent={handleEditClose} fid={formid} />
             </Box>
           </Modal>
         </div>

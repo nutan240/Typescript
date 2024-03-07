@@ -1,10 +1,11 @@
 import { sendPasswordResetEmail } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { auth } from "../Firebase/Firebase";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
+  CircularProgress, 
   IconButton,
   Stack,
   TextField,
@@ -22,17 +23,19 @@ interface SwalOptions {
 
 function ForgotPassword({ closeEvent }: { closeEvent: () => void }) {
   const history = useNavigate();
+  const [loading, setLoading] = useState(false); // Manage loading state
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true); // Set loading state to true
 
     const target = e.target as typeof e.target & {
       email: { value: string };
     };
 
-    const emalVal = target.email.value;
+    const emailVal = target.email.value;
 
-    sendPasswordResetEmail(auth, emalVal)
+    sendPasswordResetEmail(auth, emailVal)
       .then(() => {
         closeEvent();
 
@@ -40,7 +43,7 @@ function ForgotPassword({ closeEvent }: { closeEvent: () => void }) {
           icon: "success",
           title: "Reset Email Sent",
           text: "Check your email for password reset instructions.",
-          zIndex: 9999, 
+          zIndex: 9999,
         };
         Swal.fire(options);
         setTimeout(() => {
@@ -54,9 +57,12 @@ function ForgotPassword({ closeEvent }: { closeEvent: () => void }) {
           icon: "error",
           title: "Error",
           text: err.message,
-          zIndex: 9999, // Should be a number
+          zIndex: 9999,
         };
         Swal.fire(options);
+      })
+      .finally(() => {
+        setLoading(false); // Reset loading state
       });
   };
 
@@ -101,8 +107,13 @@ function ForgotPassword({ closeEvent }: { closeEvent: () => void }) {
               }}
               type="submit"
               variant="contained"
+              disabled={loading} // Disable button when loading
             >
-              Send Reset Email
+              {loading ? ( // Show CircularProgress if loading, otherwise show button text
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Send Reset Email"
+              )}
             </Button>
           </Stack>
         </form>

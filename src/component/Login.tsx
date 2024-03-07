@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import {
   Box,
-  Button,
+ 
   Modal,
   Stack,
-  TextField,
+  
   Typography,
   CircularProgress,
 } from "@mui/material";
@@ -121,17 +121,17 @@ function Login() {
   const classes = useStyles();
   const [errorMsg, setErrorMsg] = useState<string>("");
   const navigate = useNavigate();
-  const [value, setValue] = useState<string>("");
+//   const [value, setValue] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  useEffect(() => {
-    setValue(localStorage.getItem("email") || "");
-  }, []);
-
+//   useEffect(() => {
+//     setValue(localStorage.getItem("email") || "");
+//   }, []);
+console.log(errorMsg)
   const formik = useFormik({
     initialValues: {
       email: "",

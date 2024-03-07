@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { Formik, Form, useFormik, FormikHelpers } from "formik";
-import { Box, Grid, Stack, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Stack,
+  Typography,
+  CircularProgress,
+  TextField,
+ 
+} from "@mui/material";
 import { NavLink, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db, provider } from "../Firebase/Firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as Yup from "yup";
+
 import { addDoc, collection } from "firebase/firestore";
 import Image1 from "../assets/loginimg.jpg";
-import Inputcomp from "./Inputcomp";
 
-import { makeStyles } from "mui-styles-hook";
 import CustomButton from "./CustomButton";
+import { makeStyles } from "mui-styles-hook";
 import { FcGoogle, FcPhone } from "react-icons/fc";
 
 interface FormValues {
@@ -22,73 +28,80 @@ interface FormValues {
   password: string;
   phoneno: string;
   showPassword: boolean;
-  //  onSubmit:()=>void ;
 }
 
 const useStyles = makeStyles(() => ({
-  grid_container: {
-    display: "flex",
-    width: "100%",
-    overflow: "auto",
-    height: "100vh",
-  },
-  grid_container1: {
-    background:
-      "radial-gradient(263px at 100.2% 3%, rgb(12, 85, 141) 31.1%, rgb(205, 181, 93) 36.4%, rgb(244, 102, 90) 50.9%, rgb(199, 206, 187) 60.7%, rgb(249, 140, 69) 72.5%, rgb(12, 73, 116) 72.6%)",
-    overflow: "auto",
-    width: "100%",
-    height: "100vh",
-  },
-
-  form_container11: {
-    display: "flex",
-
-    width: { lg: "30%", sm: "57%" },
-
-    background: "white",
-    borderTopLeftRadius: 6,
-    borderBottomLeftRadius: 6,
-    padding: "48px",
-    height: "auto",
-    overflow: "auto",
-    marginX: "auto",
-    marginTop: "20px",
-  },
-  typography_para: {
-    fontSize: "13px",
-    fontStyle: "italic",
-  },
-  box_container1: {
-    background: "#303f5ea3",
-    width: "50%",
-    display: { lg: "block", sm: "none", xs: "none" },
-  },
-  stack_side_container: {
-    backgroundImage: ` url( ${Image1} )`,
-    objectFit: "cover",
-    position: "center",
-    overflow: "auto",
-    height: "500px",
-    width: "100%",
-    marginTop: "100px",
-    borderTopRightRadius: 9,
-    borderBottomRightRadius: 9,
-  },
+    grid_container: {
+        display: "flex",
+        width: "100%",
+        overflow: "auto",
+        height: "100vh",
+      },
+      grid_container1: {
+        background:
+          "radial-gradient(263px at 100.2% 3%, rgb(12, 85, 141) 31.1%, rgb(205, 181, 93) 36.4%, rgb(244, 102, 90) 50.9%, rgb(199, 206, 187) 60.7%, rgb(249, 140, 69) 72.5%, rgb(12, 73, 116) 72.6%)",
+        overflow: "auto",
+        width: "100%",
+        height: "100vh",
+      },
+    
+      form_container11: {
+        display: "flex",
+    
+        width: { lg: "30%", sm: "57%" },
+    
+        background: "white",
+        borderTopLeftRadius: 9,
+        borderTopRightRadius: 9,
+        borderBottomLeftRadius: 9,
+        borderBottomRightRadius: 9,
+        padding: "48px",
+        height: "auto",
+        overflow: "auto",
+        marginX: "auto",
+        marginTop: "20px",
+      },
+      typography_para: {
+        fontSize: "13px",
+        fontStyle: "italic",
+      },
+      box_container1: {
+        background: "#303f5ea3",
+        width: "50%",
+        display: { lg: "block", sm: "none", xs: "none" },
+      },
+      stack_side_container: {
+        backgroundImage: ` url( ${Image1} )`,
+        objectFit: "cover",
+        position: "center",
+        overflow: "auto",
+        height: "500px",
+        width: "100%",
+        marginTop: "100px",
+        borderTopRightRadius: 9,
+        borderBottomRightRadius: 9,
+      },
 }));
 
 const Signup: React.FC = () => {
   const classes = useStyles();
-//   const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
-//   const [value, setValue] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const usersCollection = collection(db, "posts");
+console.log(errorMsg)
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const values: FormValues = {
+      firstname: formData.get("firstname") as string,
+      lastname: formData.get("lastname") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      phoneno: formData.get("phoneno") as string,
+      showPassword: false, 
+    };
 
-  const handleSubmit = async (
-    values: FormValues,
-    formikHelpers: FormikHelpers<FormValues>
-  ) => {
-    // setErrorMsg("");
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -109,7 +122,7 @@ const Signup: React.FC = () => {
 
       localStorage.setItem("user", JSON.stringify(user));
     } catch (error: any) {
-    //   setErrorMsg(error.message);
+      setErrorMsg(error.message);
       console.error("Error during registration:", error);
       toast.error("Registration failed. Please try again.");
     } finally {
@@ -117,30 +130,11 @@ const Signup: React.FC = () => {
     }
   };
 
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "" && null,
-      phoneno: "",
-      showPassword: false,
-    },
-    validationSchema: Yup.object({
-      firstname: Yup.string().required("Please enter your firstname"),
-      lastname: Yup.string().required("Please enter your lastname"),
-      email: Yup.string().email().required("Please enter your email"),
-      password: Yup.string().min(6).required("Please enter your password"),
-    }),
-    onSubmit: handleSubmit,
-  });
-
   const handelgoogle = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
         if (user.email) {
-        //   setValue(user.email);
           localStorage.setItem("email", user.email);
           navigate("/home");
         } else {
@@ -171,85 +165,46 @@ const Signup: React.FC = () => {
                 Sign Up
               </Typography>
 
-              <Formik
-                initialValues={{
-                  firstname: "",
-                  lastname: "",
-                  email: "",
-                  password: "",
-                }}
-                onSubmit={formik.handleSubmit}
-              >
-                <Form>
-                  <Stack
-                    sx={{ width: "100%", fontSize: "19px" }}
-                    direction={"column"}
-                    spacing={1}
-                  >
-                    <Inputcomp
-                      label={"Firstname"}
-                      type={"text"}
-                      inputname={"firstname"}
-                      inputvalue={formik.values.firstname}
-                      handleChange={formik.handleChange}
-                      handleBlur={formik.handleBlur}
-                    />
-                    <Typography sx={classes.typography_para} color={"red"}>
-                      {formik.errors.firstname &&
-                        formik.touched.firstname &&
-                        formik.errors.firstname}
-                    </Typography>
+              <form onSubmit={handleSubmit}>
+                <Stack
+                  sx={{ width: "100%", fontSize: "19px" }}
+                  direction={"column"}
+                  spacing={1}
+                >
+                  <TextField
+                    label={"Firstname"}
+                    type={"text"}
+                    name={"firstname"}
+                   
+                  />
 
-                    <Inputcomp
-                      label={"Lastname"}
-                      type={"text"}
-                      inputname={"lastname"}
-                      inputvalue={formik.values.lastname}
-                      handleChange={formik.handleChange}
-                      handleBlur={formik.handleBlur}
-                    />
-                    <Typography sx={classes.typography_para} color={"red"}>
-                      {formik.errors.lastname &&
-                        formik.touched.lastname &&
-                        formik.errors.lastname}
-                    </Typography>
+                  <TextField
+                    label={"Lastname"}
+                    type={"text"}
+                    name={"lastname"}
+                    
+                  />
 
-                    <Inputcomp
-                      label={"Email"}
-                      type={"email"}
-                      inputname={"email"}
-                      inputvalue={formik.values.email}
-                      handleChange={formik.handleChange}
-                      handleBlur={formik.handleBlur}
-                    />
-                    <Typography sx={classes.typography_para} color={"red"}>
-                      {formik.errors.email &&
-                        formik.touched.email &&
-                        formik.errors.email}
-                    </Typography>
+                  <TextField
+                    label={"Email"}
+                    type={"email"}
+                    name={"email"}
+                  />
 
-                    <Inputcomp
-                      label={"Password"}
-                      type={formik.values.showPassword ? "text" : "password"}
-                      inputname={"password"}
-                      inputvalue={formik.values.password}
-                      handleChange={formik.handleChange}
-                      handleBlur={formik.handleBlur}
-                    />
+                  <TextField
+                    label={"Password"}
+                    type={"password"}
+                    name={"password"}
+                    
+                  />
 
-                    <Typography sx={classes.typography_para} color={"red"}>
-                      {formik.errors.password &&
-                        formik.touched.password &&
-                        formik.errors.password}
-                    </Typography>
-                    {loading ? (
-                      <CircularProgress size={24} color="inherit" />
-                    ) : (
-                      <CustomButton buttontype={"submit"} title={"sign up "} />
-                    )}
-                  </Stack>
-                </Form>
-              </Formik>
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    <CustomButton buttontype={"submit"} title={"sign up "} />
+                  )}
+                </Stack>
+              </form>
 
               <Box
                 sx={{
@@ -268,11 +223,8 @@ const Signup: React.FC = () => {
                     alignItems: "flex-end",
                   }}
                 >
-                  {" "}
-                  <FcPhone
-                    style={{ fontSize: "23px", paddingRight: "10px" }}
-                  />{" "}
-                  signin with Phone
+                  <FcPhone style={{ fontSize: "23px", paddingRight: "10px" }} />{" "}
+                  signin with Phone No..
                 </Typography>
                 <Typography
                   onClick={handelgoogle}
@@ -282,10 +234,7 @@ const Signup: React.FC = () => {
                     alignItems: "flex-end",
                   }}
                 >
-                  {" "}
-                  <FcGoogle
-                    style={{ fontSize: "19px", paddingRight: "10px" }}
-                  />{" "}
+                  <FcGoogle style={{ fontSize: "19px", paddingRight: "10px" }} />{" "}
                   signin with google
                 </Typography>
               </Box>

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import React from "react";
+
 import Image from "../IMG/footerimg.jpg";
 
 

@@ -69,10 +69,10 @@ function Info() {
             >
               <InfoIcon />
             </ListItemIcon>
-            <ListItemText onClick={() => navigate("/about")} primary="ABOUT" />
+            <ListItemText onClick={() => navigate("/about")} primary="EMPLOYEE" />
           </ListItemButton>
         </ListItem>
-        
+
         <ListItem disablePadding sx={{ display: "block" }}>
             <ListItemButton
               sx={{
@@ -140,6 +140,30 @@ function Info() {
               <ListItemText
                 onClick={() => navigate("/trands")}
                 primary="POPULAR TRANDS "
+              />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: "center",
+                pl: 3.7,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 4,
+                  justifyContent: "center",
+                }}
+              >
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText
+                onClick={() => navigate("/user")}
+                primary="USER_DETAILS"
               />
             </ListItemButton>
           </ListItem>
